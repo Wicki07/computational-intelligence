@@ -2,28 +2,47 @@ from simpful import *
 
 FS = FuzzySystem()
 
-TLV = AutoTriangle(3, terms=['low', 'medium', 'high'], universe_of_discourse=[0,1])
-FS.add_linguistic_variable("distance", TLV)
-FS.add_linguistic_variable("speed", TLV)
+speed1 = TrapezoidFuzzySet(0, 0, 20, 65, term="low")
+speed2 = TriangleFuzzySet(15, 65, 115, term="medium")
+speed3 = TriangleFuzzySet(65, 115, 115, term="high")
+FS.add_linguistic_variable("speed", LinguisticVariable([speed1, speed2, speed3], universe_of_discourse=[0, 120]))
 
-O1 = TriangleFuzzySet(0,0,16,   term="low")
-O2 = TriangleFuzzySet(0,16,30,  term="medium")
-O3 = TriangleFuzzySet(16,30,30, term="high")
-FS.add_linguistic_variable("tip", LinguisticVariable([O1, O2, O3], universe_of_discourse=[0,30]))
+distance1 = TrapezoidFuzzySet(0, 0, 25, 45, term="low")
+distance2 = TrapezoidFuzzySet(20, 45, 105, 130, term="medium")
+distance3 = TriangleFuzzySet(105, 130, 130, term="high")
+FS.add_linguistic_variable("distance",
+                           LinguisticVariable([distance1, distance2, distance3],
+                                              universe_of_discourse=[0, 140]))
+
+acceleration1 = TrapezoidFuzzySet(-1, -1, -0.4, 0, term="highM")
+acceleration2 = TriangleFuzzySet(-0.4, 0, 0.1, term="lowM")
+acceleration3 = TriangleFuzzySet(-0.1, 0, 0.4, term="lowP")
+acceleration4 = TriangleFuzzySet(0, 0.4, 0.4, term="highP")
+FS.add_linguistic_variable("acceleration",
+                           LinguisticVariable([acceleration1, acceleration2, acceleration3, acceleration4],
+                                              universe_of_discourse=[-1, 1]))
+
+# FS.plot_variable("distance")
+# FS.plot_variable("speed")
+# FS.plot_variable("acceleration")
+
 
 FS.add_rules([
-	"IF (quality IS poor) OR (service IS poor) THEN (tip IS low)",
-	"IF (service IS average) THEN (tip IS medium)",
-	"IF (quality IS good) OR (quality IS good) THEN (tip IS high)"
-	])
+    "IF (distance IS low) AND (speed IS low) THEN (acceleration IS highM)",
+    "IF (distance IS medium) AND (speed IS low) THEN (acceleration IS lowM)",
+    "IF (distance IS high) AND (speed IS low) THEN (acceleration IS lowM)",
+    "IF (distance IS low) AND (speed IS medium) THEN (acceleration IS highP)",
+    "IF (distance IS medium) AND (speed IS medium) THEN (acceleration IS lowM)",
+    "IF (distance IS high) AND (speed IS medium) THEN (acceleration IS lowM)",
+    "IF (distance IS low) AND (speed IS high) THEN (acceleration IS lowP)",
+    "IF (distance IS medium) AND (speed IS high) THEN (acceleration IS highM)",
+    "IF (distance IS high) AND (speed IS high) THEN (acceleration IS lowM)",
+])
 
-FS.set_variable("quality", 3)
-FS.set_variable("service", 8)
 
-tipMamdani = FS.Mamdani_inference()
+FS.set_variable("distance", 20)
+FS.set_variable("speed", 65)
 
+result = FS.inference()
 
-print(tipMamdani)
-FS.plot_variable("quality")
-FS.plot_variable("service")
-FS.plot_variable("tip")
+print(result)

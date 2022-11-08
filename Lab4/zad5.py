@@ -27,7 +27,7 @@ def f(positions):
 options = {'c1': 0.5, 'c2': 0.3, 'w':0.9, 'k':2, 'p':1}
 optimizer = ps.discrete.BinaryPSO(n_particles=10, dimensions=15,
 options=options)
-stats = optimizer.optimize(f, iters=30, verbose=True)
+stats = optimizer.optimize(f, iters=100, verbose=True)
 cost_history = optimizer.cost_history
 posistions = stats[1]
 s1 = []
@@ -42,5 +42,5 @@ for i in range(len(posistions)):
 
 print(s1)
 print(s2)
-plot_cost_history(cost_history)
-plt.show()
+# plot_cost_history(cost_history)
+# plt.show()

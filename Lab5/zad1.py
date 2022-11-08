@@ -24,6 +24,6 @@ tipMamdani = FS.Mamdani_inference()
 
 
 print(tipMamdani)
-FS.plot_variable("quality")
-FS.plot_variable("service")
+# FS.plot_variable("quality")
+# FS.plot_variable("service")
 FS.plot_variable("tip")
